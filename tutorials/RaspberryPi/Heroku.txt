@@ -1,0 +1,44 @@
+Heroku ->>
+
+1. Create an account by going to Heroku website -
+https://signup.heroku.com/
+
+2. Login with the account and create a new app(name should be chosen based on availability)
+
+3. Have to install Heroku-CLI on Raspberry Pi to push app to Heroku platform. Use this command on terminal on Raspberry Pi -
+
+sudo npm install -g heroku
+
+3. Login to Heroku using Heroku-CLI(go to terminal on Raspberry Pi)
+heroku login
+You will be redirected to web browser where you have to enter the credentials. Once successful, you will be logged in the CLI terminal
+
+4. Go to directory of app(in my case it was express_webapp)
+
+5. Modify package.json to give start script -
+"scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+6. Initialize git repository
+git init
+
+7. Commit changes
+git add package.json index.js
+git commit -am "<message>"
+
+8. Set remote for heroku -
+heroku git:remote -a weather-station-iot-2021(app name you selected before)
+
+9. Push changes to heroku remote and it will trigger deployment of app
+git push heroku master
+
+
+
+
+
+
+
+
+

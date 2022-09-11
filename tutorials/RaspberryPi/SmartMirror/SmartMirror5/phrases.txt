@@ -1,0 +1,5 @@
+jigsaw show camera
+jigsaw hide camera
+jigsaw show fortune
+jigsaw hide fortune
+jigsaw exit

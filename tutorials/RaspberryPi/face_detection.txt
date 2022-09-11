@@ -1,0 +1,5 @@
+- JS is used for prototyping but the drawback is it is slow on Raspberry Pi
+
+- C/C++ and Python are other alternatives
+
+

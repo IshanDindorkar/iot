@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Timers</title>
+  </head>
+  <body>
+    <h1>Timers</h1>
+    
+    <p>The time is <span id="time">Waiting...</span></p>
+    <script>
+    function dispTime() {
+    	document.getElementById("time").innerText = (new Date()).toString();
+    }
+    setInterval(dispTime, 500);
+    </script>
+  </body>
+</html>

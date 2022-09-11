@@ -1,0 +1,63 @@
+1. Install msmtp on RaspberryPi using steps given on this page -
+https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=244147
+
+2. If page is gone, follow these commands
+sudo apt-get install msmtp msmtp-mta
+sudo nano /etc/msmtprc
+
+# Generics
+defaults
+auth           on
+tls            on
+# following is different from ssmtp:
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+# user specific log location, otherwise use /var/log/msmtp.log, however, 
+# this will create an access violation if you are user pi, and have not changes the access rights
+logfile        ~/.msmtp.log
+
+# Gmail specifics
+account        gmail
+host           smtp.gmail.com
+port           587
+
+from          root@raspi-buster
+user           your-gmail-accountname@gmail.com
+password       your-gmail-account-password
+
+# Default
+account default : gmail
+
+Now you can test if you are able to send email
+echo 'your message' | msmtp destination-email-address@gmail.com
+
+3. Create service to kickoff at startup
+Edit this file ->>>
+
+sudo nano /lib/systemd/system/send_startup_email.service
+
+The contents should look like this -
+
+[Unit]
+Description=Report IP by Email
+After=network.target
+
+[Service]
+Type=idle
+ExecStartPre=/bin/sleep 30
+ExecStart=/home/pi/send_startup_email.sh
+
+[Install]
+WantedBy=network.target
+
+Note: this line > ExecStartPre=/bin/sleep 30 is needed for networks to come up and running before searching for smtp host
+
+4. Now enable the service using this command -
+sudo systemctl enable send_startup_email.service 
+
+To check status of the service -
+sudo systemctl status send_startup_email.service 
+
+5. Reboot RaspberryPi to check if email is triggered
+sudo reboot
+
+

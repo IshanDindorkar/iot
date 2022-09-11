@@ -1,0 +1,54 @@
+1. Plug plantronics headset into raspberry pi board. This is because Frontech mic enabled web cam is not detected by board.
+2. Check output of command arecord -l. This must show plantronics headset. If not detected, there is an issue.
+
+sudo apt-get remove pulseaudio
+
+sudo apt-get install -y bison libasound2-dev
+
+3. download 2 files -
+sudo wget https://sourceforge.net/projects/cmusphinx/files/sphinxbase/0.8/sphinxbase-0.8.tar.gz/download -O sphinxbase-0.8.tar.gz
+
+wget https://sourceforge.net/projects/cmusphinx/files/pocketsphinx/0.8/pocketsphinx-0.8.tar.gz/download -O pocketsphinx-0.8.tar.gz
+
+4. untar the files using these commands -
+tar xvzf pocketsphinx-0.8.tar.gz
+tar xvzf sphinxbase-0.8.tar.gz 
+
+5. Build sphinxbase
+cd sphinxbase-0.8/
+./configure --enable-fixed
+make
+sudo make install
+
+6. Similarly build pocketsphinx
+cd pocketsphinx-0.8/
+./configure
+make
+sudo make install
+
+7. Start speech processing engine
+cd src/programs
+export PS1=$
+./pocketsphinx_continuous -adcdev plughw:1,0
+
+8. Mute debug messages
+./pocketsphinx_continuous -adcdev plughw:1,0 2> /dev/null
+
+9. Create our own language model
+nano phrases.txt
+> Add sentences in lower case without punctuations
+hello world
+hello pillu
+bye world
+bye bye
+
+10. Use CMU website to generate necessary config file for custom language model
+http://www.speech.cs.cmu.edu/tools/lmtool-new.html
+
+11. Upload phrases.txt file and click on button - COMPILE KNOWLEDGE BASE
+
+12. Download TAR file and extract it locally. You will find files with extensions - .lm and .dic
+
+13. Use this command to launch pocketsphinx with custom language model
+./pocketsphinx_continuous -adcdev plughw:1,0 -lm 8904.lm -dict 8904.dic 2> /dev/null
+

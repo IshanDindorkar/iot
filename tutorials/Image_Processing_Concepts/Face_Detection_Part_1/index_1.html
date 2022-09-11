@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    .container {
+      min-width: 320px;
+      min-height: 240px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Face Tracking Demo</h1>
+  <div class="container"><video id="video" width="320" height="240" preload autoplay loop muted></video></div>
+  <button onclick="snap()">Snap!</button>
+  <div class="container"><canvas id="canvas" width="320" height="240"></canvas></div>
+  <div class="container"><canvas id="face" ></canvas></div>
+  <script src="node_modules/tracking/build/tracking.js"></script>
+  <script src="node_modules/tracking/build/data/face-min.js"></script>
+  <script src="node_modules/tracking/build/data/eye-min.js"></script>
+  <script>
+    function drawRect(context, rect, color) {
+      context.strokeStyle = color;
+      context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+
+    }
+    window.onload = function() {
+      navigator.webkitGetUserMedia({video: true}, function(stream) {
+            video.src = window.URL.createObjectURL(stream);
+            video.play();
+      }, function(){});
+      var video = document.getElementById('video');      
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');      
+      var face = new tracking.ObjectTracker(['face']);
+      var faceCanvas = document.getElementById('face');      
+      var faceCanvasContext = faceCanvas.getContext("2d");
+      face.setInitialScale(1);      face.setStepSize(1);      face.setEdgesDensity(0.1);
+      var eye = new tracking.ObjectTracker(['eye']);
+      eye.setInitialScale(1.5);
+      eye.setStepSize(0.5);
+      eye.setEdgesDensity(0.1);
+      face.on('track', function(event) {
+        if (event.data.length) {
+          var f = event.data[0];
+          faceCanvas.width = 2*f.width;
+          faceCanvas.height = 2*f.height;
+          faceCanvasContext.drawImage(canvas, f.x, f.y, f.width, f.height, 0, 0, 2*f.width, 2*f.height);
+          tracking.track(faceCanvas, eye);          
+        }
+        event.data.forEach(function(rect) {
+          drawRect(context, rect, '#000');
+        });        
+      });
+      eye.on('track', function(event) {
+        event.data.forEach(function (rect) {
+          drawRect(faceCanvasContext, rect, '#000');
+        });
+      });
+      window.snap = function () {
+        context.drawImage(video, 0, 0, 320, 240);
+        tracking.track(canvas, face);
+      };
+    };
+  </script>
+</body>
+</html>   

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Events</title>
+  </head>
+  <body>
+    <h1>Events</h1>
+    <span onclick="countClicks()">Click Me</span> 
+    <p id="nclicks">0 clicks so far</p>
+    <script>
+    var n = 0;
+    function countClicks() {
+    	var p = document.getElementById("nclicks");
+    	++n;
+    	p.innerText = n+' clicks';
+    }
+    </script>
+  </body>
+</html>
